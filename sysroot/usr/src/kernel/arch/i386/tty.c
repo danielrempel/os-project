@@ -40,22 +40,56 @@ void terminal_putentryat(char c, uint8_t color, size_t x, size_t y)
 void terminal_putchar(char c)
 {
 	if(c != '\n') {
-		terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
-		if ( ++terminal_column == VGA_WIDTH )
-		{
-			terminal_column = 0;
-			if ( ++terminal_row == VGA_HEIGHT )
+		
+		if( !((c>='a' && c<='z')||(c>='A' && c<='Z')||
+			(c>='0'&&c<='9')||
+			(c=='\\')||
+			(c==' ')||
+			(c=='\'')||
+			(c==':')||
+			(c=='_')
+			
+			) ) {
+			terminal_putchar('\\');
+			terminal_putchar("0123456789ABCDEF"[c / 16]);
+			terminal_putchar("0123456789ABCDEF"[c % 16]);
+		} else {		
+		
+			terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
+			if ( ++terminal_column == VGA_WIDTH )
 			{
-				terminal_row = 0;
+				terminal_column = 0;
+				if(terminal_row == VGA_HEIGHT-1) {
+					for(int i=1; i<VGA_HEIGHT; i+=1) {
+						// memmove
+						for(int j=0; j<VGA_WIDTH; j+=1)
+							terminal_buffer[(i-1)*VGA_WIDTH+j] = terminal_buffer[i*VGA_WIDTH+j];
+					}
+					for(int j=0; j<VGA_WIDTH; j+=1)
+						terminal_putentryat(' ', terminal_color, j, terminal_row);
+					terminal_row = VGA_HEIGHT-1;
+				}
+				else
+					terminal_row += 1;
 			}
+			
 		}
 	}
 	else {
 		terminal_column = 0;
-		if ( ++terminal_row == VGA_HEIGHT )
-		{
-			terminal_row = 0;
+		
+		if(terminal_row == VGA_HEIGHT-1) {
+			for(int i=1; i<VGA_HEIGHT; i+=1) {
+				// memmove
+				for(int j=0; j<VGA_WIDTH; j+=1)
+					terminal_buffer[(i-1)*VGA_WIDTH+j] = terminal_buffer[i*VGA_WIDTH+j];
+			}
+			for(int j=0; j<VGA_WIDTH; j+=1)
+				terminal_putentryat(' ', terminal_color, j, terminal_row);
+			terminal_row = VGA_HEIGHT-1;
 		}
+		else
+			terminal_row += 1;
 	}
 }
 
