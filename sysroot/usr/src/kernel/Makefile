@@ -10,7 +10,7 @@ INCLUDEDIR?=$(PREFIX)/include
 LIBDIR?=$(EXEC_PREFIX)/lib
 
 CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
-CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -Iinclude -I${SYSROOT}/${INCLUDEDIR}
+CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -Iinclude -I${SYSROOT}/${INCLUDEDIR}  -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include
 LDFLAGS:=$(LDFLAGS) -L${SYSROOT}/${LIBDIR}
 LIBS:=$(LIBS) -nostdlib -lk -lgcc
 
