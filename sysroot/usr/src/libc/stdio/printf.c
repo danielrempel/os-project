@@ -35,7 +35,7 @@ static void print(const char* data, size_t data_length)
 static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_t zeroPad) {
 	int32_t written = 0;
 	
-	uint64_t divider = 10000000000000000000;
+	uint64_t divider = 10000000000000000000U;
 	uint64_t intCopy = intSelf;
 	int8_t nonzero = zeroPad;
 	int8_t current = 0;
@@ -76,7 +76,7 @@ static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_
  * */
 static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) {
 	int32_t written = 0;
-	uint64_t divider = 0x1000000000000000;
+	uint64_t divider = 0x1000000000000000U;
 	uint64_t intCopy = intSelf;
 	
 	int8_t current = 0;
@@ -121,7 +121,7 @@ int printf(const char* restrict format, ...)
 	enum types { t_char, t_short, t_int, t_long } currentFlag = t_int;
 	enum conversions { c_int, c_uint, c_uint_hex, c_char, c_str, c_ptr } currentConv = c_int;
 	
-	#define signf(x) (x>0 ? 1 : -1)
+	#define signf(x) (x>=0 ? 1 : -1)
 	#define abs(x) (x<0 ? -x : x)
 
 	while ( *format != '\0' )
