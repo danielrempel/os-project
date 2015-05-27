@@ -40,6 +40,9 @@ static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_
 	int8_t nonzero = zeroPad;
 	int8_t current = 0;
 	
+	if(sign == -1)
+		putchar('-');
+	
 	while(divider > 0) {
 		current = (intCopy / divider);
 		
