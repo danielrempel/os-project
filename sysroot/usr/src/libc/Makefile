@@ -13,7 +13,7 @@ LIBDIR?=$(EXEC_PREFIX)lib
 
 CFLAGS:=$(CFLAGS) -Wall -Wextra
 CPPFLAGS:=$(CPPFLAGS) -ffreestanding -D__is_myos_libc -Iinclude -I${SYSROOT}${INCLUDEDIR}  -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include
-LIBK_CFLAGS:=$(CFLAGS) -ffreestanding -fbuiltin -Iinclude -I${SYSROOT}/${INCLUDEDIR} -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include
+LIBK_CFLAGS:=$(CFLAGS) -ffreestanding -fbuiltin -Iinclude -I${SYSROOT}/${INCLUDEDIR} -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include -g
 LIBK_CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel
 
 ARCHDIR:=arch/$(SYSTEM_ARCH)

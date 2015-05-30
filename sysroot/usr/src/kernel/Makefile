@@ -9,9 +9,9 @@ BOOTDIR?=$(EXEC_PREFIX)/boot
 INCLUDEDIR?=$(PREFIX)/include
 LIBDIR?=$(EXEC_PREFIX)/lib
 
-CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra
-CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -Iinclude -I${SYSROOT}/${INCLUDEDIR}  -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include
-LDFLAGS:=$(LDFLAGS) -L${SYSROOT}/${LIBDIR}
+CFLAGS:=$(CFLAGS) -ffreestanding -Wall -Wextra -fno-stack-protector -nostartfiles -g
+CPPFLAGS:=$(CPPFLAGS) -D__is_myos_kernel -Iinclude -I${SYSROOT}/${INCLUDEDIR}  -I${SYSROOT}../toolchain/lib/gcc/i386-unknown-elf/4.9.1/include -g
+LDFLAGS:=$(LDFLAGS) -L${SYSROOT}/${LIBDIR} -g
 LIBS:=$(LIBS) -nostdlib -lk -lgcc
 
 ARCHDIR:=arch/$(KERNEL_ARCH)
