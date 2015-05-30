@@ -9,6 +9,9 @@ launch-iso: iso/img.iso
 
 launch-kernel: kernel
 	qemu-system-i386 -kernel ${KERNEL}
+	
+launch-kernel-debug: kernel
+	qemu-system-i386 -s -S -kernel ${KERNEL}
 
 iso/img.iso: system
 	cp ${KERNEL} iso/img/boot/kernel.bin
