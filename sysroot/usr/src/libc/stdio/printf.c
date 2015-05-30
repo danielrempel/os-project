@@ -60,6 +60,8 @@ static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_
 		intCopy %= divider;
 		divider /= 10;
 	}
+	if(intSelf == 0)
+		putchar('0');
 	
 	return written;
 }
@@ -70,7 +72,7 @@ static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_
  * 
  * @param intSelf signless original integer
  * @param size - sizeof of original datatype (1,2,4,8) to pad with right amount of zeroes
- * @param zeroPad - (1,0) marks whether to pad or not to pad the integer printed with zeroes
+ * @param 
  * 
  * @return count of chars printed
  * */
@@ -78,6 +80,7 @@ static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) 
 	int32_t written = 0;
 	uint64_t divider = 0x1000000000000000U;
 	uint64_t intCopy = intSelf;
+	int8_t nonzero = 0;
 	
 	int8_t current = 0;
 	while(divider > 0) {
@@ -89,11 +92,22 @@ static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) 
 			else
 				putchar("0123456789abcdef"[current]);
 			written += 1;
+			if(nonzero == 0)
+				nonzero = 1;
 		}
-		
+		if((current == 0) && (nonzero == 1)) {
+			if(uppercase>0)
+				putchar("0123456789ABCDEF"[current]);
+			else
+				putchar("0123456789abcdef"[current]);
+			written += 1;
+		}
+						
 		intCopy %= divider;
 		divider /= 16;
 	}
+	if(intSelf == 0)
+		putchar('0');
 	
 	return 0;
 }
@@ -135,7 +149,7 @@ int printf(const char* restrict format, ...)
 			else {
 				convStarted = 1;
 				currentConv = c_int;
-				currentFlag = t_long;
+				currentFlag = t_int;
 				zeroPad = 0;
 				uppercaseHex = 0;
 			}
@@ -214,9 +228,27 @@ int printf(const char* restrict format, ...)
 								size = 8;
 								}
 							break;
-							case t_char:
-							case t_short:
-							case t_int:
+							case t_int: {
+								tmp = va_arg(parameters, int32_t);
+								param = abs(tmp);
+								sign = signf(tmp);
+								size = 4;
+							}
+							break;
+							case t_char: {
+								tmp = (int8_t)va_arg(parameters, int32_t);
+								param = abs(tmp);
+								sign = signf(tmp);
+								size = 1;
+							}
+							break;
+							case t_short: {
+								tmp = (int16_t)va_arg(parameters, int32_t);
+								param = abs(tmp);
+								sign = signf(tmp);
+								size = 2;
+							}
+							break;
 							default: {
 								tmp = (int32_t) va_arg(parameters, int32_t);
 								param = abs(tmp);
@@ -235,13 +267,28 @@ int printf(const char* restrict format, ...)
 								size = 8;
 								}
 							break;
-							case t_char:
-							case t_short:
-							case t_int:
-							default: {
+							case t_int: {
 								param = (uint32_t) va_arg(parameters, uint32_t);
 								sign = 1;
 								size = 4;
+							}
+							break;
+							case t_char: {
+								param = (uint8_t) va_arg(parameters, uint32_t);
+								sign = 1;
+								size = 4;
+							}
+							break;
+							case t_short: {
+								param = (uint16_t) va_arg(parameters, uint32_t);
+								sign = 1;
+								size = 4;
+							}
+							break;
+							default: {
+								param = (uint32_t) va_arg(parameters, uint32_t);
+								sign = 1;
+								size = 2;
 							}
 						}
 						if(currentConv == c_uint_hex)
