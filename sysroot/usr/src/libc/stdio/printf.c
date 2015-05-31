@@ -72,17 +72,19 @@ static int32_t print_dec(const uint64_t intSelf, int8_t sign, int8_t size, int8_
  * 
  * @param intSelf signless original integer
  * @param size - sizeof of original datatype (1,2,4,8) to pad with right amount of zeroes
- * @param 
+ * @param uppercase - (1,0) marks whether to print the number in uppercase letters or not
+ * @param zeroPad - (1,0) marks whether to pad or not to pad the integer printed with zeroes
  * 
  * @return count of chars printed
  * */
-static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) {
+static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase, int8_t zeroPad) {
 	int32_t written = 0;
 	uint64_t divider = 0x1000000000000000U;
 	uint64_t intCopy = intSelf;
-	int8_t nonzero = 0;
+	int8_t nonzero = zeroPad;
 	
 	int8_t current = 0;
+	
 	while(divider > 0) {
 		current = (intCopy / divider);
 		
@@ -94,8 +96,7 @@ static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) 
 			written += 1;
 			if(nonzero == 0)
 				nonzero = 1;
-		}
-		if((current == 0) && (nonzero == 1)) {
+		} else if((current == 0) && (nonzero == 1)) {
 			if(uppercase>0)
 				putchar("0123456789ABCDEF"[current]);
 			else
@@ -106,8 +107,11 @@ static int32_t print_hex(const uint64_t intSelf, int8_t size, int8_t uppercase) 
 		intCopy %= divider;
 		divider /= 16;
 	}
-	if(intSelf == 0)
+	
+	if((intSelf == 0) && (nonzero == 0)) {
 		putchar('0');
+		written += 1;
+	}
 	
 	return 0;
 }
@@ -292,7 +296,7 @@ int printf(const char* restrict format, ...)
 							}
 						}
 						if(currentConv == c_uint_hex)
-							print_hex(param,size,uppercaseHex);
+							print_hex(param,size,uppercaseHex,zeroPad);
 						else
 							print_dec(param,sign,size,zeroPad);
 					break;
@@ -308,7 +312,7 @@ int printf(const char* restrict format, ...)
 					break;
 					case c_ptr: {
 						uint32_t ptr = (uint32_t) va_arg(parameters, uint32_t);
-						print_hex(ptr,sizeof(uint32_t),uppercaseHex);
+						print_hex(ptr,sizeof(uint32_t),uppercaseHex, /*zeroPad*/ 1);
 					}
 					break;
 				}
