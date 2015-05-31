@@ -41,14 +41,9 @@ void terminal_putchar(char c)
 {
 	if(c != '\n') {
 		
-		if( !((c>='a' && c<='z')||(c>='A' && c<='Z')||
-			(c>='0'&&c<='9')||
-			(c=='\\')||
-			(c==' ')||
-			(c=='\'')||
-			(c==':')||
-			(c=='_')
-			
+		if( !((c>='a' && c<='~')||(c>=33 && c<='^')||
+				(c==' ')||
+				(c=='\t')
 			) ) {
 			terminal_putchar('\\');
 			terminal_putchar("0123456789ABCDEF"[c / 16]);
