@@ -12,6 +12,9 @@ launch-kernel: kernel
 	
 launch-kernel-debug: kernel
 	qemu-system-i386 -s -S -kernel ${KERNEL}
+	
+launch-kernel-bochs: iso/img.iso
+	bochs -f bochsrc.txt -q
 
 iso/img.iso: system
 	cp ${KERNEL} iso/img/boot/kernel.bin
