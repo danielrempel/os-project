@@ -16,6 +16,7 @@ void terminal_initialize(void)
 	terminal_column = 0;
 	terminal_color = make_color(COLOR_LIGHT_GREY, COLOR_BLACK);
 	terminal_buffer = VGA_MEMORY;
+
 	for ( size_t y = 0; y < VGA_HEIGHT; y++ )
 	{
 		for ( size_t x = 0; x < VGA_WIDTH; x++ )
@@ -49,7 +50,7 @@ void terminal_putchar(char c)
 			terminal_putchar("0123456789ABCDEF"[c / 16]);
 			terminal_putchar("0123456789ABCDEF"[c % 16]);
 		} else {		
-		
+
 			terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
 			if ( ++terminal_column == VGA_WIDTH )
 			{
@@ -67,12 +68,12 @@ void terminal_putchar(char c)
 				else
 					terminal_row += 1;
 			}
-			
+
 		}
 	}
 	else {
 		terminal_column = 0;
-		
+
 		if(terminal_row == VGA_HEIGHT-1) {
 			for(int i=1; i<VGA_HEIGHT; i+=1) {
 				// memmove
