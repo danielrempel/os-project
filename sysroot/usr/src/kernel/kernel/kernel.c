@@ -8,14 +8,19 @@
 #include "multiboot.h"
 #include "mb-memory-map.h"
 
+#include <kernel/vga.h>
+
 void kernel_early(void)
-{
-	terminal_initialize();
+{	
+	//terminal_initialize();
 }
 
 void kernel_main(multiboot_info_t* mbt, unsigned int magic)
 {
-	printf("Hello, kernel World!\n");
+	//printf("Hello, kernel World!\n");
+	
+	asm("xchgw %bx, %bx");
+	asm("movl $0xcafebab0, %eax");
 	
 	// check mode
 	int cr0;
@@ -25,40 +30,33 @@ void kernel_main(multiboot_info_t* mbt, unsigned int magic)
 		: 
 		);
 		
-	if((cr0 & 1) == 1) {
-		terminal_writestring("We're in protected mode\n");
+	/*if((cr0 & 1) == 1) {
+		printf("We're in protected mode\n");
 	}
 	else {
-		terminal_writestring("We're not in protected mode.\n");
+		printf("We're not in protected mode.\n");
 	}
 	
-	unsigned long long mem_size = 0;
+	unsigned long mem_size = 0;
 	
 	multiboot_memory_map_t* mmap = mbt->mmap_addr;
 	while(mmap < mbt->mmap_addr + mbt->mmap_length) {
 		if(mmap->type == 1)
 			mem_size += mmap->length;
+		
+		printf("Memory part: 0x%lX, len: 0x%lX (%lu) KiB, type: %u\n", mmap->base_addr, (mmap->length), (uint64_t)(mmap->length/1024), mmap->type);
+
 		mmap = (multiboot_memory_map_t*) ( (unsigned int)mmap + mmap->size + sizeof(unsigned int) );
 	}
-	terminal_writestring("Available memory: ");
-	unsigned char *ptr = &mem_size;
-	mem_size /= 1024; // to KiBs
 	
-	// convert ordinary number (represented via bytes) to weird magical
-	// representation which can be printed as decimal
-	unsigned long long decimal = 0, modifier = 1;
-	while(mem_size > 0) {
-		// ptr points to lsp
-		// ptr+i to current beginning from hsp
-		decimal += (mem_size%10) * modifier;
-		modifier *= 16;
-		mem_size/=10;
-	}
+	printf("Available memory: %lu KiB\n", mem_size/1024);*/
 	
-	ptr = &decimal;
-	for(int i=sizeof(unsigned long long)+1; i>0; i-=1) {
-		terminal_putchar("0123456789ABCDEF"[*(ptr+i-1) / 16]);
-		terminal_putchar("0123456789ABCDEF"[*(ptr+i-1) % 16]);
-	}
-	terminal_writestring(" KiB\n");
+// 0x00000000c010042c:
+	asm("movl $0xcafebabe, %eax");
+	
+	// TODO: Проверь, какого размера страницы
+	// TODO: Попадает ли VGA память в нужную страницу?
+	
+	VGA_MEMORY[0] = make_vgaentry('O', COLOR_WHITE);
+	VGA_MEMORY[1] = make_vgaentry('K', COLOR_WHITE);
 }
