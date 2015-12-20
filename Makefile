@@ -19,6 +19,7 @@ launch-kernel-bochs: iso/img.iso
 iso/img.iso: system
 	cp ${KERNEL} iso/img/boot/kernel.bin
 	grub-mkrescue -o iso/img.iso iso/img
+# ^^^^^^^^^^^^^^^ deps: mtools, xorriso, grub-pc-bin
 
 system: headers libc kernel
 
